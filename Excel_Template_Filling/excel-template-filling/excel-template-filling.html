@@ -1,0 +1,188 @@
+<script type="text/javascript">
+    RED.nodes.registerType('excel-template-filling',{
+        category: 'Atlas~Optimus~Excel Processing',
+		keywords: 'Excel, Template, Content, Filling',
+        color: '#23a5bc',
+        defaults: {
+			name: {value:"Excel template filling"},
+            dataForTemplate: {value:"data-for-template",required:true},
+			templateExcelLocation: {value:"template-location",required:true},
+			reportExcelLocation: {value:"report-location"},
+			sheetName: {value:"sheet-name",required:true},
+			columnDataTypes: {value:"coulmns-datatype"},
+			headerRowNumber: {value:"1"},
+			writeType: {value:"overwrite"}
+		},
+        inputs:1,
+        outputs:1,
+        icon: "file.png",
+        label: function() {
+            return this.name||"excel-template-filling";
+        }
+    });
+	
+</script>
+
+<script type="text/x-red" data-template-name="excel-template-filling">
+<div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-dataForTemplate"><i class="icon-tag"></i> Data</label>
+        <input type="text" id="node-input-dataForTemplate" placeholder="Data to fill in template file">
+    </div>
+	<div class="form-row">
+        <label for="node-input-templateExcelLocation"><i class="icon-tag"></i> Template File</label>
+        <input type="text" id="node-input-templateExcelLocation" placeholder="Template file with name and extention">
+    </div>
+	<div class="form-row">
+        <label for="node-input-reportExcelLocation"><i class="icon-tag"></i> Report Location</label>
+        <input type="text" id="node-input-reportExcelLocation" placeholder="Location for Report file generation">
+    </div>
+	<div class="form-row">
+        <label for="node-input-sheetName"><i class="icon-tag"></i> Sheet Name</label>
+        <input type="text" id="node-input-sheetName" placeholder="Sheet name to be filled in template file">
+    </div>	
+	<div class="form-row">
+        <label for="node-input-columnDataTypes"><i class="icon-tag"></i> Column and Datatype</label>
+        <input type="text" id="node-input-columnDataTypes" placeholder="Column and datatype for conversion">
+    </div>
+	<div class="form-row">
+        <label for="node-input-headerRowNumber"><i class="icon-tag"></i> Header Row Number</label>
+		<input type="number" id="node-input-headerRowNumber" style="width:80px" value="300">
+    </div>
+	<div class="form-row">
+        <label for="node-input-writeType"><i class="icon-tag"></i> Write Type</label>
+        <select type="text" id="node-input-writeType">
+			<option value="overwrite">Overwrite</option>
+			<option value="append">Append</option>
+		</select>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="excel-template-filling">
+	<h3>Description</h3>
+	<p>This node take template file location and sheet name to be filled as input and fills the sheet with the data provides as json arry of json object.</p>
+	<p>This will work for xlsx and xlsm files.
+	</p>
+	
+	<h3>Inputs</h3>
+	<dl class="message-properties">
+		<dt>Name<span class="property-type">string</span></dt>
+		<dd>
+			<p>Name of the node to be displayed in the editor / canvas.</p>
+			<p>E.g : Excel template filling</p>
+		</dd>
+		
+		<dt>Data<span class="property-type">string | json</span></dt>
+		<dd>
+			<p>Data to be filled in template file sheet, expcted in json array of json object.</p>
+			<p>E.g : </p>
+			<ul>
+				<li>As a reference for property which is available in context variable : data-for-template / excel-data </li>
+				<li>As a direct string, contains data of json format : [{"Name" : "Sree", "Team" : "CTEO"}, {"Name" : "Jagadeesh", "Team" : "Atlas"}]</li>
+			</ul>
+		</dd>
+		
+		<dt>Template File<span class="property-type">string</span></dt>
+		<dd>
+			<p>Template file location with name and extension</p>
+			<p>E.g : </p>
+			<ul>
+				<li>As a reference for property which is available in context variable : template-file / input-file </li>
+				<li>As a direct string, contains path for template file : D:\\Excel\\Template.xlsx (or) D:/Excel/Template.xlsx</li>
+			</ul>
+		</dd>
+		
+		<dt>Report Location<span class="property-type">string</span></dt>
+		<dd>
+			<p>Location of report file to be generated, if not given data will written in the template file itself</p>
+			<p>E.g : </p>
+			<ul>
+				<li>As a reference for property which is available in context variable : report-location / output-location </li>
+				<li>As a direct string, contains path for report location : D:\\Excel\\ (or) D:/Excel/</li>
+			</ul>
+		</dd>
+		
+		<dt>Sheet Name<span class="property-type">string</span></dt>
+		<dd>
+			<p>Name of the sheet in the template file which need to get filled.</p>
+			<p>E.g : </p>
+			<ul>
+				<li>As a reference for property which is available in context variable : sheet-name / template-sheet </li>
+				<li>As a direct string, contains sheet name : Sheet1 (or) Data Collection</li>
+			</ul>
+		</dd>
+		
+		<dt>Column and Datatype<span class="property-type">string | json</span></dt>
+		<dd>
+			<p>Column and datatype in json object format for converting data of particular column to specifc type, as of now accepts only Numberic and Date. Other values will be considered as String value</p>
+			<p>E.g : </p>
+			<ul>
+				<li>As a reference for property which is available in context variable : column-datatype / conversion-type </li>
+				<li>As a direct string, contains json object : {"Age" : "Numeric"}</li>
+			</ul>
+		</dd>
+		
+		<dt>Header Row Number<span class="property-type">numeric</span></dt>
+		<dd>
+			<p>The row number of header in the template excel.</p>
+			<p>E.g : </p>
+			<ul>
+				<li>As a reference for property which is available in context variable : header-row / header-number </li>
+				<li>As a direct numeric value, contains header row number : 1</li>
+			</ul>
+		</dd>
+		
+		<dt>Write Type<span class="property-type">string</span></dt>
+		<dd>
+			<p>The type of content filling in the template, overwrite will clear the data from header and writes new content where the append will add data from the last used row.</p>
+			<p>E.g : </p>
+			<ul>
+				<li>Select value from drop-down, by default it is Overwrite</li>
+			</ul>
+		</dd>
+	</dl>
+
+	
+	<h3>Output</h3>
+	<p>The output will be available in <code>msg.result</code>. The result will have status, data and message properties, incase of any failure the status will be Failed and cause for failure will be message property, the data will hold the required output from server only when the status is Success.		
+	</p>
+	
+	<h3>Sample Inputs</h3>
+	<dl class="message-properties">
+		<dd><b>Data : </b>[{"Name" : "Sree", "Team" : "CTEO"}, {"Name" : "Jagadeesh", "Team" : "Atlas"}]</dd>
+		<dd><b>Template File : </b>D:\\Excel\\Template.xlsx</dd>
+		<dd><b>Report Location : </b>D:\\Excel\\</dd>
+		<dd><b>Sheet Name : </b>Sheet1</dd>
+		<dd><b>Column and Datatype : </b></dd>
+		<dd><b>Header Row Number : </b>1</dd>
+		<dd><b>Write Type : </b>overwrite</dd>
+	</dl>
+	
+	<h3>Sample Output</h3>
+	<dl class="message-properties">
+		<p><code>msg.result</code></p>
+		<dd>
+			{<br/>
+				"data":"",<br/>
+				"message":"Data inserted successfully into template and stored into location - D:\\Excel\\Template_report.xlsx",<br/>
+				"status":"Success"<br/>
+			}
+		</dd>
+	</dl>
+	
+	<h3 id="precedence">Note on input parameters: Precedence order</h3>
+    <dl class="message-properties">
+		<p>This node can accept input data from multiple sources such as msg object, flow context, global context. Upstream nodes in the usecase flow will have added the input data to any one of these sources. 
+		The node will look for the input data from the sources in the order specified below. If they are found in the first source, it will use them. Else, it will look for input data in the next source.</p>
+		
+		<p>Order of priority:</p>
+		<ol>
+			<li>Msg object</li>
+			<li>Flow context</li>
+			<li>Global context</li>
+		</ol>
+    </dl>
+</script>

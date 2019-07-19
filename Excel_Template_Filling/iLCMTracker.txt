@@ -1,0 +1,172 @@
+[
+    {
+        "id": "a2fca249.a5018",
+        "type": "Profileconfig",
+        "z": "da1d707b.cced7",
+        "name": "iLCM APIs-profileconfig",
+        "properties": [
+            {
+                "p": "costPerTransaction",
+                "pt": "flow",
+                "to": "1",
+                "tot": "str",
+                "category": "systemtype"
+            },
+            {
+                "p": "effortPerTransaction",
+                "pt": "flow",
+                "to": "1",
+                "tot": "str",
+                "category": "systemtype"
+            },
+            {
+                "p": "Stakeholders",
+                "pt": "flow",
+                "to": "user@hcl.com",
+                "tot": "str",
+                "category": "systemtype"
+            }
+        ],
+        "x": 110,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a360283f.6b0af8",
+        "type": "inject",
+        "z": "da1d707b.cced7",
+        "name": "iLCM APIs-inject",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 110,
+        "y": 160,
+        "wires": [
+            [
+                "61aabc37.932944"
+            ]
+        ]
+    },
+    {
+        "id": "39e2f071.c312d",
+        "type": "End",
+        "z": "da1d707b.cced7",
+        "name": "end",
+        "x": 270,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "b13e8023.9f1e9",
+        "type": "http request",
+        "z": "da1d707b.cced7",
+        "name": "",
+        "method": "POST",
+        "ret": "txt",
+        "url": "http://10.166.90.80:8081/tfwp/rest/atlas/ilcm/activityManagement/query/getActivites",
+        "tls": "",
+        "x": 450,
+        "y": 140,
+        "wires": [
+            [
+                "c3e1cf1.5e5723"
+            ]
+        ]
+    },
+    {
+        "id": "61aabc37.932944",
+        "type": "function",
+        "z": "da1d707b.cced7",
+        "name": "",
+        "func": "var activityRequest = {\n  \"productName\": \"MobileApp\",\n  \"user\": \"silambarasur\",\n  \"productVersionName\": \"MobileApp Version\",\n  \"productBuildName\": \"MobileApp Build2\",\n  \"activityWorkPackageName\": \"TW\"\n}\nmsg[\"payload\"] = activityRequest;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 290,
+        "y": 200,
+        "wires": [
+            [
+                "b13e8023.9f1e9"
+            ]
+        ]
+    },
+    {
+        "id": "68743896.c8d518",
+        "type": "debug",
+        "z": "da1d707b.cced7",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "x": 550,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "2c528725.a5d1a8",
+        "type": "debug",
+        "z": "da1d707b.cced7",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "x": 610,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "b8d9dd51.9c7df",
+        "type": "catch",
+        "z": "da1d707b.cced7",
+        "name": "",
+        "scope": null,
+        "x": 360,
+        "y": 40,
+        "wires": [
+            [
+                "2c528725.a5d1a8"
+            ]
+        ]
+    },
+    {
+        "id": "c3e1cf1.5e5723",
+        "type": "function",
+        "z": "da1d707b.cced7",
+        "name": "",
+        "func": "msg[\"payload\"] = JSON.parse(msg[\"payload\"]);\nvar activityList = msg[\"payload\"][\"data\"];\nvar activities = [];\nfor(var index in activityList){\n    var activitySource = activityList[index];\n    var activity = {};\n    activity[\"S.No\"] = activitySource[\"activityId\"];\n    activity[\"Release / CR Name\"] = activitySource[\"activityName\"];\n    activity[\"Month\"] = activitySource[\"modifiedDate\"];\n    activity[\"Task description\"] = activitySource[\"priorityName\"]+\" - \"+ activitySource[\"engagementName\"]+ \" - \"+ activitySource[\"productName\"]+\" - \"+ activitySource[\"activityWorkPackageName\"];\n    activity[\"Phase\"] = activitySource[\"workflowStatusType\"];\n    activity[\"Resource Name\"] = activitySource[\"assigneeName\"];\n    //activity[\"Available Effort\"] = \"\";\n    activity[\"Planned effort\"] = activitySource[\"plannedEffort\"];\n    activity[\"Actual effort\"] = activitySource[\"totalEffort\"];\n    console.log(\"~~~> \"+JSON.stringify(activitySource[\"customField\"]));\n    activity[\"Status\"] = activitySource[\"customField\"][\"Status\"];\n    /*activity[\"Planned Size\"] = \"\";\n    activity[\"Goal\"] = \"\";\n    activity[\"Variance\"] = \"\";\n    activity[\"ILP Score\"] = \"\";*/\n    activities.push(activity);\n}\nmsg[\"activities\"] = activities;\n\nvar columnAndDatatype = {\n    \"S.No\" : \"Numeric\",\n    \"Planned effort\" : \"Numeric\",\n    \"Actual effort\" : \"Numeric\"\n};\nmsg[\"columnAndDatatype\"] = columnAndDatatype;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 490,
+        "y": 220,
+        "wires": [
+            [
+                "c9b8ca40.7f87b8"
+            ]
+        ]
+    },
+    {
+        "id": "c9b8ca40.7f87b8",
+        "type": "excel-template-filling",
+        "z": "da1d707b.cced7",
+        "name": "Excel template filling",
+        "dataForTemplate": "activities",
+        "templateExcelLocation": "D:\\\\Dtacollection.xlsx",
+        "sheetName": "Data Collection",
+        "columnDataTypes": "columnAndDatatype",
+        "startRowNumber": "2",
+        "x": 520,
+        "y": 320,
+        "wires": [
+            [
+                "68743896.c8d518"
+            ]
+        ]
+    }
+]

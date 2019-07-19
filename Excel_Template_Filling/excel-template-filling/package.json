@@ -1,0 +1,28 @@
+{
+  "name": "excel-template-filling",
+  "version": "1.0.0",
+  "description": "Node for connecting excel-template-filling",
+  "dependencies": {
+  },
+  "devDependencies": {},
+  "main": "excel-template-filling.js",
+  "node-red": {
+    "nodes": {
+      "excel-template-filling": "excel-template-filling.js"
+    }
+  },
+  "repository": {
+    "private": true
+  },
+ "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "excel-template-filling",
+    "template",
+	"excel",
+	"atlas"
+  ],
+  "author": "sreebanraj.r",
+  "license": "ISC"
+}
